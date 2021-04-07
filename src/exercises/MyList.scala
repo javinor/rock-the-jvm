@@ -24,7 +24,7 @@ abstract class MyList[+A] {
 }
 
 
-object Nil extends MyList[Nothing] {
+case object Nil extends MyList[Nothing] {
   override def head = throw new NoSuchElementException
 
   override def tail = throw new NoSuchElementException
@@ -47,7 +47,7 @@ object Nil extends MyList[Nothing] {
 }
 
 
-class Cons[+A](val head: A, val tail: MyList[A]) extends MyList[A] {
+case class Cons[+A](val head: A, val tail: MyList[A]) extends MyList[A] {
   override def isEmpty: Boolean = false
 
   override def add[B >: A](element: B): MyList[B] = new Cons(element, this)
@@ -106,6 +106,10 @@ object ListTest extends App {
   println(four.filter(evenPredicate))
   println(four.map(batmanTransformer))
   println(four.flatMap(n => new Cons(n.toString * n, Nil)))
+
+
+  val anotherL1 = new Cons(1, Nil)
+  println(l1 == anotherL1)
 
 
 }
