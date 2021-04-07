@@ -16,20 +16,20 @@ abstract class MyList[+A] {
 }
 
 
-class Nil[A] extends MyList[A] {
+class Nil extends MyList[Nothing] {
   override def head = throw new NoSuchElementException
 
   override def tail = throw new NoSuchElementException
 
   override def isEmpty: Boolean = true
 
-  override def add[B >: A](element: B): MyList[B] = new Cons(element, this)
+  override def add[B /* :> Nothing*/ ](element: B): MyList[B] = new Cons(element, this)
 
   override def toString: String = "Nil"
 }
 
 
-class Cons[A](val head: A, val tail: MyList[A]) extends MyList[A] {
+class Cons[+A](val head: A, val tail: MyList[A]) extends MyList[A] {
   override def isEmpty: Boolean = false
 
   override def add[B >: A](element: B): MyList[B] = new Cons(element, this)
@@ -40,7 +40,7 @@ class Cons[A](val head: A, val tail: MyList[A]) extends MyList[A] {
 
 object ListTest extends App {
 
-  val l0 = new Nil[Int]
+  val l0 = new Nil
   val l1 = l0 add 1
   val l2 = l1 add 2.2f
   val l3 = l2 add 'a'

@@ -65,13 +65,17 @@ object Generics extends App {
 
 
   class Car
+
   //  val newCage = new Cage(new Car) // doesn't work!
 
   class MyListBounded[+A] {
-    def add[B >: A](element: B) : MyList[B] = ???
+    def add[B >: A](element: B): MyList[B] = ???
+
     // so adding an Animal to a List of Cat will turn into a list of Animal
     // But what to do when adding a Dog to a list of Cats?
   }
 
+  val catMyList = new exercises.Cons(new Cat, new exercises.Nil)
+  val animalMyList = catMyList.add(new Dog)
 
 }
