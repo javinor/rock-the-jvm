@@ -75,7 +75,7 @@ object Generics extends App {
     // But what to do when adding a Dog to a list of Cats?
   }
 
-  val catMyList = new exercises.Cons(new Cat, new exercises.Nil)
+  val catMyList = new exercises.Cons(new Cat, exercises.Nil)
   val animalMyList = catMyList.add(new Dog)
 
 }

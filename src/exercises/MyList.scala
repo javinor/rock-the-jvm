@@ -24,7 +24,7 @@ abstract class MyList[+A] {
 }
 
 
-class Nil extends MyList[Nothing] {
+object Nil extends MyList[Nothing] {
   override def head = throw new NoSuchElementException
 
   override def tail = throw new NoSuchElementException
@@ -83,7 +83,7 @@ trait MyTransformer[-A, B] {
 
 object ListTest extends App {
 
-  val l0 = new Nil
+  val l0 = Nil
   val l1 = l0 add 1
   val l2 = l1 add 2.2f
   val l3 = l2 add 'a'
@@ -101,11 +101,11 @@ object ListTest extends App {
     override def transform(n: Int): String = s"TA${"NA" * n} BATMAN!"
   }
 
-  val four = new Cons(4, new Cons(3, new Cons(2, new Cons(1, new Nil))))
+  val four = new Cons(4, new Cons(3, new Cons(2, new Cons(1, Nil))))
   println(four.toString)
   println(four.filter(evenPredicate))
   println(four.map(batmanTransformer))
-  println(four.flatMap(n => new Cons(n.toString * n, new Nil)))
+  println(four.flatMap(n => new Cons(n.toString * n, Nil)))
 
 
 }
