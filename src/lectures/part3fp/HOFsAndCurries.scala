@@ -32,4 +32,32 @@ object HOFsAndCurries extends App {
 
   println(standardFormatter(Math.PI))
   println(preciseFormatter(Math.PI))
+
+
+  /////////////////
+  // Exercises
+
+  def curry[A, B, C]: ((A, B) => C) => A => B => C =
+    f => a => b => f(a, b)
+
+  def uncurry[A, B, C]: (A => B => C) => (A, B) => C =
+    f => (a, b) => f(a)(b)
+
+  val adder = (x: Int, y: Int) => x + y
+  println(curry(adder)(3)(4))
+  val curriedAdder = (x: Int) => (y: Int) => x + y
+  println(uncurry(curriedAdder)(3, 4))
+
+
+  val add10 = (x: Int) => x + 10
+  val doubler = (x: Int) => x * 2
+
+  def compose[A, B, C](f: B => C, g: A => B): A => C =
+    x => f(g(x))
+  println(compose(add10, doubler)(1))
+
+  def andThen[A, B, C](f: A => B, g: B => C): A => C =
+    x => g(f(x))
+  println(andThen(add10, doubler)(1))
+
 }
