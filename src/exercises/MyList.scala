@@ -31,7 +31,7 @@ case object Nil extends MyList[Nothing] {
 
   override def isEmpty: Boolean = true
 
-  override def add[B /* :> Nothing*/ ](element: B): MyList[B] = new Cons(element, this)
+  override def add[B /* :> Nothing*/ ](element: B): MyList[B] = Cons(element, this)
 
   override def toString: String = "Nil"
 
@@ -50,21 +50,21 @@ case object Nil extends MyList[Nothing] {
 case class Cons[+A](val head: A, val tail: MyList[A]) extends MyList[A] {
   override def isEmpty: Boolean = false
 
-  override def add[B >: A](element: B): MyList[B] = new Cons(element, this)
+  override def add[B >: A](element: B): MyList[B] = Cons(element, this)
 
   override def toString = s"$head :: ${tail.toString}"
 
 
   override def filter(p: MyPredicate[A]): MyList[A] = {
-    if (p.test(head)) new Cons(head, tail.filter(p))
+    if (p.test(head)) Cons(head, tail.filter(p))
     else tail.filter(p)
   }
 
   override def map[B](t: MyTransformer[A, B]): MyList[B] =
-    new Cons(t.transform(head), tail.map(t))
+    Cons(t.transform(head), tail.map(t))
 
   override def concat[B >: A](other: MyList[B]): MyList[B] =
-    new Cons(head, tail.concat(other))
+    Cons(head, tail.concat(other))
 
   override def flatMap[B](t: MyTransformer[A, MyList[B]]): MyList[B] =
     t.transform(head).concat(tail.flatMap(t))
@@ -94,7 +94,7 @@ object ListTest extends App {
   println(l3 isEmpty)
 
 
-  val four = new Cons(4, new Cons(3, new Cons(2, new Cons(1, Nil))))
+  val four = Cons(4, Cons(3, Cons(2, Cons(1, Nil))))
   println(four.toString)
 
   val evenPredicate = new MyPredicate[Int] {
@@ -108,12 +108,12 @@ object ListTest extends App {
   println(four.map(batmanTransformer))
 
   val stringListTransformer = new MyTransformer[Int, MyList[String]] {
-    override def transform(x: Int): MyList[String] = new Cons(x.toString * x, new Cons((x * 2).toString * x * 2, Nil))
+    override def transform(x: Int): MyList[String] = Cons(x.toString * x, Cons((x * 2).toString * x * 2, Nil))
   }
   println(four.flatMap(stringListTransformer))
 
 
-  val anotherL1 = new Cons(1, Nil)
+  val anotherL1 = Cons(1, Nil)
   println(l1 == anotherL1)
 
 
