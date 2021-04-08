@@ -20,7 +20,7 @@ abstract class MyList[+A] {
 
   def concat[B >: A](other: MyList[B]): MyList[B]
 
-  def flatMap[B](f: A => MyList[B]): MyList[B]
+  def flatMap[B](t: MyTransformer[A, MyList[B]]): MyList[B]
 }
 
 
@@ -42,7 +42,7 @@ case object Nil extends MyList[Nothing] {
 
   override def concat[B >: Nothing](other: MyList[B]): MyList[B] = other
 
-  override def flatMap[B](f: Nothing => MyList[B]): MyList[B] = this
+  override def flatMap[B](t: MyTransformer[Nothing, MyList[B]]): MyList[B] = this
 
 }
 
@@ -66,8 +66,8 @@ case class Cons[+A](val head: A, val tail: MyList[A]) extends MyList[A] {
   override def concat[B >: A](other: MyList[B]): MyList[B] =
     new Cons(head, tail.concat(other))
 
-  override def flatMap[B](f: A => MyList[B]): MyList[B] =
-    f(head).concat(tail.flatMap(f))
+  override def flatMap[B](t: MyTransformer[A, MyList[B]]): MyList[B] =
+    t.transform(head).concat(tail.flatMap(t))
 
 }
 
@@ -93,19 +93,24 @@ object ListTest extends App {
   println(l3 tail)
   println(l3 isEmpty)
 
+
+  val four = new Cons(4, new Cons(3, new Cons(2, new Cons(1, Nil))))
+  println(four.toString)
+
   val evenPredicate = new MyPredicate[Int] {
     override def test(x: Int): Boolean = x % 2 == 0
   }
+  println(four.filter(evenPredicate))
 
   val batmanTransformer = new MyTransformer[Int, String] {
     override def transform(n: Int): String = s"TA${"NA" * n} BATMAN!"
   }
-
-  val four = new Cons(4, new Cons(3, new Cons(2, new Cons(1, Nil))))
-  println(four.toString)
-  println(four.filter(evenPredicate))
   println(four.map(batmanTransformer))
-  println(four.flatMap(n => new Cons(n.toString * n, Nil)))
+
+  val stringListTransformer = new MyTransformer[Int, MyList[String]] {
+    override def transform(x: Int): MyList[String] = new Cons(x.toString * x, new Cons((x * 2).toString * x * 2, Nil))
+  }
+  println(four.flatMap(stringListTransformer))
 
 
   val anotherL1 = new Cons(1, Nil)
