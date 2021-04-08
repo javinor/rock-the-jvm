@@ -47,7 +47,7 @@ case object Nil extends MyList[Nothing] {
 }
 
 
-case class Cons[+A](val head: A, val tail: MyList[A]) extends MyList[A] {
+case class Cons[+A](head: A, tail: MyList[A]) extends MyList[A] {
   override def isEmpty: Boolean = false
 
   override def add[B >: A](element: B): MyList[B] = Cons(element, this)
@@ -91,8 +91,8 @@ object ListTest extends App {
 
   val four = Cons(4, Cons(3, Cons(2, Cons(1, Nil))))
   println(four.toString)
-  println(four.filter(x => x % 2 == 0))
-  println(four.map(n => s"TA${"NA" * n} BATMAN!"))
+  println(four.filter(_ % 2 == 0))
+  println(four.map(s"TA${"NA" * _} BATMAN!"))
   println(four.flatMap(x => Cons(x.toString * x, Cons((x * 2).toString * x * 2, Nil))))
 
 
