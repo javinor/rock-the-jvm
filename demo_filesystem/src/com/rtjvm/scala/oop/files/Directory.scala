@@ -20,7 +20,7 @@ class Directory(override val parentPath: String, override val name: String, val 
     new Directory(parentPath, name, contents :+ newEntry) // performance!?
 
   def findEntry(entryName: String): DirEntry =
-    contents.find(_ == entryName).getOrElse(null)
+    contents.find(_.name == entryName).getOrElse(null)
 
   def replaceEntry(entryName: String, newEntry: DirEntry): Directory =
     new Directory(parentPath, name, contents.filter(e => !e.name.equals(entryName)) :+ newEntry)
@@ -30,10 +30,13 @@ class Directory(override val parentPath: String, override val name: String, val 
   override def getType: String = "Directory"
 
   override def asFile: File = throw new FileSystemException("A directory cannot be converted to a file")
+
+  def isRoot: Boolean = parentPath.isEmpty
+
+  override def isDirectory: Boolean = true
+
+  override def isFile: Boolean = false
 }
-
-
-
 
 object Directory {
   val SEPARATOR = "/"
