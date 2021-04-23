@@ -19,6 +19,12 @@ trait MySet[A] extends (A => Boolean) {
   def filter[B](f: A => Boolean): MySet[A]
 
   def foreach(f: A => Unit): Unit
+
+  def -(elem: A): MySet[A]
+
+  def --(other: MySet[A]): MySet[A]
+
+  def &(other: MySet[A]): MySet[A]
 }
 
 class EmptySet[A] extends MySet[A] {
@@ -35,6 +41,12 @@ class EmptySet[A] extends MySet[A] {
   override def filter[B](f: A => Boolean): MySet[A] = this
 
   override def foreach(f: A => Unit): Unit = ()
+
+  override def -(elem: A): MySet[A] = this
+
+  override def --(other: MySet[A]): MySet[A] = this
+
+  override def &(other: MySet[A]): MySet[A] = this
 }
 
 class NonEmptySet[A](head: A, tail: MySet[A]) extends MySet[A] {
@@ -64,6 +76,15 @@ class NonEmptySet[A](head: A, tail: MySet[A]) extends MySet[A] {
     f(head)
     tail.foreach(f)
   }
+
+  override def -(elem: A): MySet[A] =
+    if (elem == head) tail
+    else new NonEmptySet(head, tail - elem)
+
+  override def --(other: MySet[A]): MySet[A] =
+    filter(!other(_))
+
+  override def &(other: MySet[A]): MySet[A] = filter(other)
 }
 
 object MySet {
@@ -84,7 +105,15 @@ object MySetPlayground extends App {
   val s = MySet(1, 2, 3)
   s.foreach(println)
 
-  s + 5 ++ MySet(8, 9) + 3 map (x => x * 10) flatMap (x => MySet(-x, x)) filter(x => x % 15 == 0) foreach println
+  s + 5 ++ MySet(8, 9) + 3 map (x => x * 10) flatMap (x => MySet(-x, x)) filter (x => x % 15 == 0) foreach println
 
 
+  println("\ntesting -")
+  s - 2 foreach println
+
+  println("\ntesting --")
+  s -- MySet(3,4) foreach println
+
+  println("\ntesting &")
+  s & MySet(3,4) foreach println
 }
